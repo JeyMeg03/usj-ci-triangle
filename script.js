@@ -1,7 +1,3 @@
-/*
- * Implements the problem of triangle calcuation
- */
-
 var INVALID_ARGUMENTS = 'The arguments were not valid';
 var NOT_A_TRIANGLE = 'Impossible to create a triangle with those sides';
 var EQUILATERAL = 'Equilateral triangle';
@@ -9,10 +5,10 @@ var ISOSCELES = 'Isosceles triangle';
 var SCALENE = 'Scalene triangle';
 
 /*
- * Given the three sides of a triangle calculates the type of the
+ * Given the three sides of a triangle it calculates the type of the
  * triangle.
  */
-function getTriangleType(lengthA, lengthB, lengthC) { 
+function getTriangleType(lengthA, lengthB, lengthC) {
   var type = '';
   // In Javascript isNaN returns true if the argument is Not a Number (NaN)
   if ( isNaN(lengthA) || isNaN(lengthB) || isNaN(lengthC) ) { //Inputs are not numbers
