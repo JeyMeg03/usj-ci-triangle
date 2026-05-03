@@ -1,47 +1,165 @@
-<html>
-  <head>
-  <script src="script.js"></script> 
-  <script>
-    /*
-     * Gets the lenghts of the sides of the triangle from the HTML elements
-     * calculates the type of triangle and shows the type on the page
-     */
-    function chekTriangleType() {
-      // Get the lengths of the sides from the UI
-      let a = document.getElementById("input-a").value;
-      let b = document.getElementById("input-b").value;
-      let c = document.getElementById("input-c").value;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roman Numeral Converter</title>
 
-      // Calculate the type of Triangle
-      triangleType = getTriangleType(a, b, c);
-      // Shows the type of Triangle in the web site
-      displayTriangleType(triangleType);
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
     }
 
-    /*
-     * Updates the HTML element result with the passed argument 
-     * (used for the triangle type)
-     */
-    function displayTriangleType(type) {
-      document.getElementById("result").innerHTML = '<b>Result</b> ' + type;
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        width: 350px;
+        text-align: center;
     }
 
-    </script>
-    </head>
-    <body>
-        <h1> Calculate Triangle Type </h1>
-        <p>
-        Length of Side A <input name="input-a" id="input-a" value="1"> </input>
-        </p>
-        <p>
-        Length of Side B <input name="input-b" id="input-b" value="1"> </input>
-        </p>
-        <p>
-        Length of Side C <input name="input-c" id="input-c" value="1"> </input>
-        </p>
-        <p>
-        <button name='button-calculate' onclick='javascript:chekTriangleType()'> Calculate </button>
-        </p>
-        <div id="result">  </div>
-    </body>
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    input, select, button {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    button {
+        background: #007BFF;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .result {
+        margin-top: 15px;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .error {
+        color: red;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Roman Numeral Converter</h1>
+
+    <select id="conversionType">
+        <option value="intToRoman">Integer → Roman</option>
+        <option value="romanToInt">Roman → Integer</option>
+    </select>
+
+    <input type="text" id="inputValue" placeholder="Enter value">
+
+    <button onclick="convert()">Convert</button>
+
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+</div>
+
+<script>
+function intToRoman(num) {
+    const map = [
+        [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+        [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
+        [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
+    ];
+
+    let result = "";
+
+    for (let [value, symbol] of map) {
+        while (num >= value) {
+            result += symbol;
+            num -= value;
+        }
+    }
+
+    return result;
+}
+
+function romanToInt(str) {
+    const map = {
+        I: 1, V: 5, X: 10,
+        L: 50, C: 100,
+        D: 500, M: 1000
+    };
+
+    let total = 0;
+
+    for (let i = 0; i < str.length; i++) {
+        const current = map[str[i]];
+        const next = map[str[i + 1]];
+
+        if (!current) return null;
+
+        if (next && current < next) {
+            total -= current;
+        } else {
+            total += current;
+        }
+    }
+
+    return total;
+}
+
+function isValidRoman(str) {
+    const regex = /^(M{0,3})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+    return regex.test(str);
+}
+
+function convert() {
+    const type = document.getElementById("conversionType").value;
+    const input = document.getElementById("inputValue").value.trim();
+    const resultDiv = document.getElementById("result");
+    const errorDiv = document.getElementById("error");
+
+    resultDiv.textContent = "";
+    errorDiv.textContent = "";
+
+    if (type === "intToRoman") {
+        const num = parseInt(input);
+
+        if (isNaN(num) || num < 1 || num > 3999) {
+            errorDiv.textContent = "Please enter a valid integer between 1 and 3999.";
+            return;
+        }
+
+        resultDiv.textContent = intToRoman(num);
+    } 
+    else {
+        const upperInput = input.toUpperCase();
+
+        if (!isValidRoman(upperInput)) {
+            errorDiv.textContent = "Please enter a valid Roman numeral.";
+            return;
+        }
+
+        resultDiv.textContent = romanToInt(upperInput);
+    }
+}
+</script>
+
+</body>
 </html>
