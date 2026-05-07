@@ -162,8 +162,14 @@ function handleConversion() {
 }
 
 /**
- * Button event listener.
+ * Wait until DOM is loaded before attaching events.
  */
-document
-    .getElementById("convertButton")
-    .addEventListener("click", handleConversion);
+document.addEventListener("DOMContentLoaded", () => {
+    const button = document.getElementById("convertButton");
+
+    if (button) {
+        button.addEventListener("click", handleConversion);
+    } else {
+        console.error("Button with id 'convertButton' not found.");
+    }
+});
