@@ -1,4 +1,19 @@
 /**
+ * Sends a custom event to Google Analytics.
+ *
+ * @param {string} eventName - The name of the event.
+ * @param {object} parameters - Additional event parameters.
+ */
+function trackEvent(eventName, parameters = {}) {
+  if (typeof gtag === 'function') {
+    gtag('event', eventName, {
+      ...parameters,
+      timestamp: new Date().toISOString()
+    });
+  }
+}
+
+/**
  * Converts an integer (between 1 and 3999) to its Roman numeral equivalent.
  *
  * @param {number} num - The integer to convert.
@@ -37,6 +52,7 @@ function integerToRoman(num) {
   ];
 
   let result = '';
+
   // Loop through each numeral mapping, appending the numeral symbol
   // as many times as possible while subtracting its value from num.
   for (const { value, numeral } of romanNumerals) {
@@ -45,6 +61,7 @@ function integerToRoman(num) {
       num -= value;       // Subtract the numeral's value from num.
     }
   }
+
   return result;
 }
 
@@ -87,6 +104,7 @@ function romanToInteger(roman) {
   // This approach helps in handling subtractive notation (e.g., IV is 4).
   for (let i = roman.length - 1; i >= 0; i--) {
     const currentValue = romanMap[roman[i]];
+
     if (currentValue < previousValue) {
       // If the current numeral is less than the previous numeral, subtract its value.
       total -= currentValue;
@@ -94,11 +112,13 @@ function romanToInteger(roman) {
       // Otherwise, add its value.
       total += currentValue;
     }
+
     previousValue = currentValue;  // Update previousValue for the next iteration.
   }
 
   // Validate that the Roman numeral is in canonical form.
   const reconversion = integerToRoman(total);
+
   if (reconversion !== roman) {
     throw new Error('The Roman numeral is not in canonical form.');
   }
@@ -114,8 +134,10 @@ function romanToInteger(roman) {
 function handleConversion() {
   // Retrieve the selected conversion mode (either 'intToRoman' or 'romanToInt').
   const mode = document.getElementById('conversionMode').value;
+
   // Get the user input from the input field.
   const input = document.getElementById('inputValue').value.trim();
+
   // Get references to the result and error display elements.
   const resultDiv = document.getElementById('result');
   const errorDiv = document.getElementById('error');
@@ -124,24 +146,58 @@ function handleConversion() {
   resultDiv.textContent = '';
   errorDiv.textContent = '';
 
+  // Track that the user clicked the Convert button.
+  trackEvent('convert_clicked', {
+    conversion_mode: mode,
+    input_length: input.length
+  });
+
   try {
     if (mode === 'intToRoman') {
       // Attempt to parse the input as an integer.
       const num = parseInt(input, 10);
+
       if (isNaN(num)) {
         throw new Error('Please enter a valid integer number.');
       }
+
       // Convert the integer to a Roman numeral.
       const roman = integerToRoman(num);
       resultDiv.textContent = `Roman Numeral: ${roman}`;
+
+      // Track successful integer to Roman conversion.
+      trackEvent('conversion_success', {
+        conversion_mode: mode,
+        input_type: 'integer',
+        output_type: 'roman',
+        input_value: num,
+        result_value: roman
+      });
+
     } else if (mode === 'romanToInt') {
       // Convert the Roman numeral to an integer.
       const num = romanToInteger(input);
       resultDiv.textContent = `Integer: ${num}`;
+
+      // Track successful Roman to integer conversion.
+      trackEvent('conversion_success', {
+        conversion_mode: mode,
+        input_type: 'roman',
+        output_type: 'integer',
+        input_length: input.length,
+        result_value: num
+      });
     }
   } catch (error) {
     // Display any error messages encountered during conversion.
     errorDiv.textContent = error.message;
+
+    // Track invalid input or conversion error.
+    trackEvent('conversion_error', {
+      conversion_mode: mode,
+      error_message: error.message,
+      input_length: input.length
+    });
   }
 }
 
