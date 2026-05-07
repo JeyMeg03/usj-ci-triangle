@@ -8,7 +8,9 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-XX5M2GMP9G');
+      gtag('config', 'G-XX5M2GMP9G', {
+        debug_mode: true
+      });
     </script>
 
     <meta charset="UTF-8">
@@ -141,11 +143,16 @@ function isValidRoman(str) {
 }
 
 function trackEvent(eventName, parameters = {}) {
+    console.log("GA event fired:", eventName, parameters);
+
     if (typeof gtag === "function") {
         gtag("event", eventName, {
             ...parameters,
+            debug_mode: true,
             timestamp: new Date().toISOString()
         });
+    } else {
+        console.warn("gtag is not available");
     }
 }
 
@@ -164,7 +171,7 @@ function convert() {
     });
 
     if (type === "intToRoman") {
-        const num = parseInt(input);
+        const num = parseInt(input, 10);
 
         if (isNaN(num) || num < 1 || num > 3999) {
             errorDiv.textContent = "Please enter a valid integer between 1 and 3999.";
@@ -183,8 +190,8 @@ function convert() {
 
         trackEvent("conversion_success", {
             conversion_type: type,
-            input_value: num,
-            result_value: romanResult
+            input_length: input.length,
+            result_type: "roman"
         });
     } 
     else {
@@ -207,8 +214,8 @@ function convert() {
 
         trackEvent("conversion_success", {
             conversion_type: type,
-            input_value: upperInput,
-            result_value: integerResult
+            input_length: input.length,
+            result_type: "integer"
         });
     }
 }
