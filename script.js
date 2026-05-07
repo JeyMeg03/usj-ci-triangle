@@ -4,13 +4,13 @@
  * Sends a custom event to Google Analytics.
  */
 function trackEvent(eventName, parameters = {}) {
-  console.log('GA event fired:', eventName, parameters)
+  console.log('GA event fired:', eventName, parameters);
 
   if (typeof gtag === 'function') {
     gtag('event', eventName, {
       ...parameters,
       timestamp: new Date().toISOString()
-    })
+    });
   }
 }
 
@@ -19,15 +19,15 @@ function trackEvent(eventName, parameters = {}) {
  */
 function integerToRoman(num) {
   if (typeof num !== 'number' || isNaN(num)) {
-    throw new Error('Input must be a valid number.')
+    throw new Error('Input must be a valid number.');
   }
 
   if (!Number.isInteger(num)) {
-    throw new Error('Input must be an integer.')
+    throw new Error('Input must be an integer.');
   }
 
   if (num <= 0 || num >= 4000) {
-    throw new Error('The number must be between 1 and 3999.')
+    throw new Error('The number must be between 1 and 3999.');
   }
 
   const romanNumerals = [
@@ -44,18 +44,18 @@ function integerToRoman(num) {
     { value: 5, numeral: 'V' },
     { value: 4, numeral: 'IV' },
     { value: 1, numeral: 'I' }
-  ]
+  ];
 
-  let result = ''
+  let result = '';
 
   for (const { value, numeral } of romanNumerals) {
     while (num >= value) {
-      result += numeral
-      num -= value
+      result += numeral;
+      num -= value;
     }
   }
 
-  return result
+  return result;
 }
 
 /**
