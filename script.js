@@ -1,15 +1,17 @@
+/* global gtag */
+
 /**
  * Sends a custom event to Google Analytics.
  */
 function trackEvent(eventName, parameters = {}) {
-    console.log("GA event fired:", eventName, parameters);
+  console.log('GA event fired:', eventName, parameters)
 
-    if (typeof gtag === "function") {
-        gtag("event", eventName, {
-            ...parameters,
-            timestamp: new Date().toISOString()
-        });
-    }
+  if (typeof gtag === 'function') {
+    gtag('event', eventName, {
+      ...parameters,
+      timestamp: new Date().toISOString()
+    })
+  }
 }
 
 /**
