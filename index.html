@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="[googletagmanager.com](https://www.googletagmanager.com/gtag/js?id=G-XX5M2GMP9G)"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XX5M2GMP9G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
       gtag('js', new Date());
 
       gtag('config', 'G-XX5M2GMP9G', {
@@ -13,8 +20,6 @@
       });
     </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roman Numeral Converter</title>
 
     <style>
@@ -41,7 +46,9 @@
             margin-bottom: 20px;
         }
 
-        input, select, button {
+        input,
+        select,
+        button {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
@@ -74,6 +81,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -86,139 +94,13 @@
 
     <input type="text" id="inputValue" placeholder="Enter value">
 
-    <button onclick="convert()">Convert</button>
+    <button id="convertButton">Convert</button>
 
     <div class="result" id="result"></div>
     <div class="error" id="error"></div>
 </div>
 
-<script>
-function intToRoman(num) {
-    const map = [
-        [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
-        [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
-        [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
-    ];
-
-    let result = "";
-
-    for (let [value, symbol] of map) {
-        while (num >= value) {
-            result += symbol;
-            num -= value;
-        }
-    }
-
-    return result;
-}
-
-function romanToInt(str) {
-    const map = {
-        I: 1, V: 5, X: 10,
-        L: 50, C: 100,
-        D: 500, M: 1000
-    };
-
-    let total = 0;
-
-    for (let i = 0; i < str.length; i++) {
-        const current = map[str[i]];
-        const next = map[str[i + 1]];
-
-        if (!current) return null;
-
-        if (next && current < next) {
-            total -= current;
-        } else {
-            total += current;
-        }
-    }
-
-    return total;
-}
-
-function isValidRoman(str) {
-    const regex = /^(M{0,3})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
-    return regex.test(str);
-}
-
-function trackEvent(eventName, parameters = {}) {
-    console.log("GA event fired:", eventName, parameters);
-
-    if (typeof gtag === "function") {
-        gtag("event", eventName, {
-            ...parameters,
-            debug_mode: true,
-            timestamp: new Date().toISOString()
-        });
-    } else {
-        console.warn("gtag is not available");
-    }
-}
-
-function convert() {
-    const type = document.getElementById("conversionType").value;
-    const input = document.getElementById("inputValue").value.trim();
-    const resultDiv = document.getElementById("result");
-    const errorDiv = document.getElementById("error");
-
-    resultDiv.textContent = "";
-    errorDiv.textContent = "";
-
-    trackEvent("convert_clicked", {
-        conversion_type: type,
-        input_length: input.length
-    });
-
-    if (type === "intToRoman") {
-        const num = parseInt(input, 10);
-
-        if (isNaN(num) || num < 1 || num > 3999) {
-            errorDiv.textContent = "Please enter a valid integer between 1 and 3999.";
-
-            trackEvent("conversion_error", {
-                conversion_type: type,
-                error_type: "invalid_integer_range",
-                input_length: input.length
-            });
-
-            return;
-        }
-
-        const romanResult = intToRoman(num);
-        resultDiv.textContent = romanResult;
-
-        trackEvent("conversion_success", {
-            conversion_type: type,
-            input_length: input.length,
-            result_type: "roman"
-        });
-    } else {
-        const upperInput = input.toUpperCase();
-
-        if (!isValidRoman(upperInput)) {
-            errorDiv.textContent = "Please enter a valid Roman numeral.";
-
-            trackEvent("conversion_error", {
-                conversion_type: type,
-                error_type: "invalid_roman_numeral",
-                input_length: input.length
-            });
-
-            return;
-        }
-
-        const integerResult = romanToInt(upperInput);
-        resultDiv.textContent = integerResult;
-
-        trackEvent("conversion_success", {
-            conversion_type: type,
-            input_length: input.length,
-            result_type: "integer"
-        });
-    }
-}
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
