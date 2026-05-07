@@ -63,13 +63,13 @@ function integerToRoman(num) {
  */
 function romanToInteger(roman) {
   if (typeof roman !== 'string' || roman.trim() === '') {
-    throw new Error('Input must be a valid Roman numeral.')
+    throw new Error('Input must be a valid Roman numeral.');
   }
 
-  roman = roman.toUpperCase()
+  roman = roman.toUpperCase();
 
   if (!/^[IVXLCDM]+$/.test(roman)) {
-    throw new Error('The Roman numeral contains invalid characters.')
+    throw new Error('The Roman numeral contains invalid characters.');
   }
 
   const romanMap = {
@@ -80,95 +80,95 @@ function romanToInteger(roman) {
     C: 100,
     D: 500,
     M: 1000
-  }
+  };
 
-  let total = 0
-  let previousValue = 0
+  let total = 0;
+  let previousValue = 0;
 
   for (let i = roman.length - 1; i >= 0; i--) {
-    const currentValue = romanMap[roman[i]]
+    const currentValue = romanMap[roman[i]];
 
     if (currentValue < previousValue) {
-      total -= currentValue
+      total -= currentValue;
     } else {
-      total += currentValue
+      total += currentValue;
     }
 
-    previousValue = currentValue
+    previousValue = currentValue;
   }
 
-  const reconversion = integerToRoman(total)
+  const reconversion = integerToRoman(total);
 
   if (reconversion !== roman) {
-    throw new Error('The Roman numeral is not in canonical form.')
+    throw new Error('The Roman numeral is not in canonical form.');
   }
 
-  return total
+  return total;
 }
 
 /**
  * Handles conversion.
  */
 function handleConversion() {
-  const mode = document.getElementById('conversionType').value
-  const input = document.getElementById('inputValue').value.trim()
+  const mode = document.getElementById('conversionType').value;
+  const input = document.getElementById('inputValue').value.trim();
 
-  const resultDiv = document.getElementById('result')
-  const errorDiv = document.getElementById('error')
+  const resultDiv = document.getElementById('result');
+  const errorDiv = document.getElementById('error');
 
-  resultDiv.textContent = ''
-  errorDiv.textContent = ''
+  resultDiv.textContent = '';
+  errorDiv.textContent = '';
 
   trackEvent('convert_clicked', {
     conversion_mode: mode,
     input_length: input.length
-  })
+  });
 
   try {
     if (mode === 'intToRoman') {
-      const num = parseInt(input, 10)
+      const num = parseInt(input, 10);
 
       if (isNaN(num)) {
-        throw new Error('Please enter a valid integer.')
+        throw new Error('Please enter a valid integer.');
       }
 
-      const roman = integerToRoman(num)
+      const roman = integerToRoman(num);
 
-      resultDiv.textContent = `Roman Numeral: ${roman}`
+      resultDiv.textContent = `Roman Numeral: ${roman}`;
 
       trackEvent('conversion_success', {
         conversion_mode: mode,
         result_type: 'roman'
-      })
+      });
     } else {
-      const integer = romanToInteger(input)
+      const integer = romanToInteger(input);
 
-      resultDiv.textContent = `Integer: ${integer}`
+      resultDiv.textContent = `Integer: ${integer}`;
 
       trackEvent('conversion_success', {
         conversion_mode: mode,
         result_type: 'integer'
-      })
+      });
     }
   } catch (error) {
-    errorDiv.textContent = error.message
+    errorDiv.textContent = error.message;
 
     trackEvent('conversion_error', {
       conversion_mode: mode,
       error_message: error.message
-    })
+    });
   }
 }
 
 /**
- * Wait until DOM is loaded before attaching events.
+ * Init after DOM is loaded
  */
 document.addEventListener('DOMContentLoaded', () => {
-  const button = document.getElementById('convertButton')
+  const button = document.getElementById('convertButton');
 
   if (button) {
-    button.addEventListener('click', handleConversion)
+    button.addEventListener('click', handleConversion);
   } else {
-    console.error('Button with id "convertButton" not found.')
+    console.error('Button with id "convertButton" not found.');
   }
-})
+});
